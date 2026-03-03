@@ -1,0 +1,10 @@
+{
+  "version": "0.2.1",
+  "tasks": [
+    {
+      "taskLabel": "tarefa-listaligada",
+      "appliesTo": "listaligada.c",
+      "type": "launch"
+    }
+  ]
+}
