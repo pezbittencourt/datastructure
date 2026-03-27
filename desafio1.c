@@ -9,6 +9,7 @@ struct no {
 struct no * novoNo(int info) {
     struct no * novo = malloc(sizeof(struct no));
     novo->info = info;
+    novo->prox = NULL; 
     return novo;
 }
 
@@ -16,6 +17,7 @@ struct no * insert_first(struct no * lista, int info) {
     struct no *novo = novoNo(info);
     if (!novo) return lista;   // se falhar, mantém a lista como estava
     novo->prox = lista;        // novo aponta para a antiga cabeça
+          // novo aponta para a antiga cabeça
     return novo;               // novo vira a cabeça
 }
 
@@ -66,3 +68,5 @@ int main() {
 
     return 0;
 }
+
+

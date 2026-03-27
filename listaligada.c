@@ -1,68 +1,89 @@
 #include<stdio.h>
 #include <stdlib.h>
 
-struct no {
+// 1. A estrutura básica (o "tijolo")
+typedef struct no {
     int info;
-    struct no* prox;
-};
+    struct no *prox;
+} No;
 
-struct no* novoNo(int info) {
-    struct no* novo = malloc(sizeof(struct no));
-    novo->info = info;
-    return novo;
-}
+// 2. Os apelidos didáticos (todos são No*)
+typedef No* Elemento;    // Use para: Criar novos nós (malloc)
+typedef No* Cursor;      // Use para: Percorrer a lista (em loops while/for)
+typedef No* Referencia;  // Use para: Guardar o 'inicio' e 'fim' dentro da struct Lista
 
-struct no* insert_first(struct no* lista, int info) {
-    struct no* novo = novoNo(info);
-    if (!novo) return lista;   // se falhar, mantém a lista como estava
-    novo->prox = lista;        // novo aponta para a antiga cabeça
-    return novo;               // novo vira a cabeça
-}
+// 3. O "Gerente" da lista
+typedef struct lista {
+    Referencia inicio;
+    Referencia fim;
+    int tamanho;
+} Controle;
 
-void insert_last(struct no* lista, int info) {
-    struct no* novo = novoNo(info);
-    // Precisamos encontrar o último elemento da lista. Quando encontramos, adicionamos o novo!
-    struct no* curr = lista;
-    while (curr->prox != NULL) {
-        curr = curr->prox;
+typedef Controle* Lista; // A lista que você passa para as funções
+
+void inserirNoInicio(Lista l, int valor) {
+    Elemento novo = (Elemento)malloc(sizeof(No));
+    if (!novo) return; // Se o malloc falhar, sai da função
+
+    novo->info = valor;
+    novo->prox = l->inicio; // O novo nó aponta para quem era o antigo primeiro
+    l->inicio = novo;       // O "Gerente" agora diz que o início é o novo nó
+
+    if (l->tamanho == 0) {  // Se era o primeiro elemento da lista
+        l->fim = novo;
     }
-    curr->prox = novo;
+    l->tamanho++;           
 }
 
-struct no* remove_first(struct no* lista) {
-    if (lista == NULL) return NULL; // lista vazia
+void inserirNoFim(Lista l, int valor) {
+    Elemento novo = (Elemento)malloc(sizeof(No));
+    if (!novo) return;
 
-    struct no* novo_inicio = lista->prox;
-    return novo_inicio;
+    novo->info = valor;
+    novo->prox = NULL; // Como é o último, ele aponta para o vazio
+
+    if (l->tamanho == 0) {    // Se a lista estiver vazia
+        l->inicio = novo;
+        l->fim = novo;
+    } else {
+        l->fim->prox = novo;  // O antigo último agora aponta para o novo
+        l->fim = novo;        // O "Gerente" atualiza quem é o novo último
+    }
+    l->tamanho++;
+}
+Lista criarLista() {
+    Lista l = (Lista)malloc(sizeof(Controle));
+    if (l) {
+        l->inicio = NULL;
+        l->fim = NULL;
+        l->tamanho = 0;
+    }
+    return l;
 }
 
+// Suas funções inserirNoInicio e inserirNoFim estão perfeitas agora!
 
-
-//Implementa a função print_list, que recebe o nó de início da lista e imprime todos os seus valores
-void print_list(struct no* lista) {
-    struct no* curr = lista;
+void imprimirLista(Lista l) {
+    Cursor curr = l->inicio;
+    printf("Lista (%d itens): ", l->tamanho);
     while (curr != NULL) {
-        if (curr->prox != NULL)
-            printf("%d...aponta para (%d)\n", curr->info, curr->prox->info);
-        else
-            printf("%d\n", curr->info);
+        printf("%d -> ", curr->info);
         curr = curr->prox;
     }
+    printf("NULL\n");
 }
+ /*
+ 
+ 1. Cria a lista (O Gerente)
+Lista myList = criarLista();
 
+ 2. Insere os valores
+    inserirNoInicio(myList, valor);
+    inserirNoFim(myList, valor);
+  3. Testa o resultado
+imprimirLista(myList);
 
-int main() {
-    struct no* lista = NULL;
-    for (int i = 1; i <= 20; i++) {
-        if (lista == NULL) {
-            lista = insert_first(lista, i);
-        }
-        else {
-            insert_last(lista, i);
-        }
-    }
-    print_list(lista);
+*/
+int main() { 
 
-
-    return 0;
 }
